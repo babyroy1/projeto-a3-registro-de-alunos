@@ -1,0 +1,44 @@
+
+package model;
+
+import java.sql.Date;
+
+public class HistoricoAcademico {
+    private int id;
+    private int idAluno;
+    private int idCurso;
+    private Date data;
+    private String status; // Ex: 'Concluído', 'Em andamento', 'Trancado'
+
+    // Getters e Setters
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getIdAluno() {
+        return idAluno;
+    }
+    public void setIdAluno(int idAluno) {
+        this.idAluno = idAluno;
+    }
+    public int getIdCurso() {
+        return idCurso;
+    }
+    public void setIdCurso(int idCurso) {
+        this.idCurso = idCurso;
+    }
+    public Date getData() {
+        return data;
+    }
+    public void setData(Date data) {
+        this.data = data;
+    }
+    public String getStatus() {
+        return status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+}

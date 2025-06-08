@@ -1,0 +1,109 @@
+
+package dao;
+
+import db.Database;
+import model.HistoricoAcademico;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class HistoricoAcademicoDAO {
+
+    public void inserirHistorico(HistoricoAcademico historico) {
+        String sql = "INSERT INTO historico_academico (id_aluno, id_curso, data, status) VALUES (?, ?, ?, ?)";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, historico.getIdAluno());
+            stmt.setInt(2, historico.getIdCurso());
+            stmt.setDate(3, historico.getData());
+            stmt.setString(4, historico.getStatus());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<HistoricoAcademico> listarHistoricos() {
+        List<HistoricoAcademico> lista = new ArrayList<>();
+        String sql = "SELECT * FROM historico_academico";
+
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                HistoricoAcademico h = new HistoricoAcademico();
+                h.setId(rs.getInt("id"));
+                h.setIdAluno(rs.getInt("id_aluno"));
+                h.setIdCurso(rs.getInt("id_curso"));
+                h.setData(rs.getDate("data"));
+                h.setStatus(rs.getString("status"));
+                lista.add(h);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public void atualizarHistorico(HistoricoAcademico historico) {
+        String sql = "UPDATE historico_academico SET id_aluno = ?, id_curso = ?, data = ?, status = ? WHERE id = ?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, historico.getIdAluno());
+            stmt.setInt(2, historico.getIdCurso());
+            stmt.setDate(3, historico.getData());
+            stmt.setString(4, historico.getStatus());
+            stmt.setInt(5, historico.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletarHistorico(int id) {
+        String sql = "DELETE FROM historico_academico WHERE id = ?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public HistoricoAcademico buscarPorId(int id) {
+        String sql = "SELECT * FROM historico_academico WHERE id = ?";
+        HistoricoAcademico h = null;
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    h = new HistoricoAcademico();
+                    h.setId(rs.getInt("id"));
+                    h.setIdAluno(rs.getInt("id_aluno"));
+                    h.setIdCurso(rs.getInt("id_curso"));
+                    h.setData(rs.getDate("data"));
+                    h.setStatus(rs.getString("status"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return h;
+    }
+}

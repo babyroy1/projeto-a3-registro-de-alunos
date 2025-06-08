@@ -1,0 +1,35 @@
+package interfacea3.dao;
+
+import interfacea3.model.Aluno;
+import java.sql.*;
+
+public class AlunoDAO {
+
+    private final String url = "jdbc:mysql://localhost:3306/seu_banco";
+    private final String user = "root";
+    private final String password = "password";
+
+    public AlunoDAO() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver"); // driver MySQL 8+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inserirAluno(Aluno aluno) throws SQLException {
+        String sql = "INSERT INTO alunos (nome, cpf, email, telefone, endereco) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, aluno.getNome());
+            stmt.setString(2, aluno.getCpf());
+            stmt.setString(3, aluno.getEmail());
+            stmt.setString(4, aluno.getTelefone());
+            stmt.setString(5, aluno.getEndereco());
+
+            stmt.executeUpdate();
+        }
+    }
+}

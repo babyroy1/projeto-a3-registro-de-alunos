@@ -1,0 +1,22 @@
+package dao;
+
+import conexao.ConexaoDAO;
+import modelo.Nota;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class NotaDAO {
+    public void inserirNota(Nota nota) throws SQLException {
+        String sql = "INSERT INTO notas (id_aluno, id_curso, nota, data_lancamento) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = ConexaoDAO.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, nota.getIdAluno());
+            stmt.setInt(2, nota.getIdCurso());
+            stmt.setDouble(3, nota.getNota());
+            stmt.setString(4, nota.getDataLancamento());
+            stmt.executeUpdate();
+        }
+    }
+}

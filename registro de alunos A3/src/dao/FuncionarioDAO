@@ -1,0 +1,109 @@
+
+package dao;
+
+import db.Database;
+import model.Funcionario;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FuncionarioDAO {
+
+    public void inserirFuncionario(Funcionario funcionario) {
+        String sql = "INSERT INTO funcionarios (nome, cargo, login, senha) VALUES (?, ?, ?, ?)";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, funcionario.getNome());
+            stmt.setString(2, funcionario.getCargo());
+            stmt.setString(3, funcionario.getLogin());
+            stmt.setString(4, funcionario.getSenha()); // já deve estar com hash
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Funcionario> listarFuncionarios() {
+        List<Funcionario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM funcionarios";
+
+        try (Connection conn = Database.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Funcionario f = new Funcionario();
+                f.setId(rs.getInt("id"));
+                f.setNome(rs.getString("nome"));
+                f.setCargo(rs.getString("cargo"));
+                f.setLogin(rs.getString("login"));
+                f.setSenha(rs.getString("senha"));
+                lista.add(f);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    public void atualizarFuncionario(Funcionario funcionario) {
+        String sql = "UPDATE funcionarios SET nome = ?, cargo = ?, login = ?, senha = ? WHERE id = ?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, funcionario.getNome());
+            stmt.setString(2, funcionario.getCargo());
+            stmt.setString(3, funcionario.getLogin());
+            stmt.setString(4, funcionario.getSenha());
+            stmt.setInt(5, funcionario.getId());
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletarFuncionario(int id) {
+        String sql = "DELETE FROM funcionarios WHERE id = ?";
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Funcionario buscarPorId(int id) {
+        String sql = "SELECT * FROM funcionarios WHERE id = ?";
+        Funcionario f = null;
+
+        try (Connection conn = Database.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    f = new Funcionario();
+                    f.setId(rs.getInt("id"));
+                    f.setNome(rs.getString("nome"));
+                    f.setCargo(rs.getString("cargo"));
+                    f.setLogin(rs.getString("login"));
+                    f.setSenha(rs.getString("senha"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return f;
+    }
+}

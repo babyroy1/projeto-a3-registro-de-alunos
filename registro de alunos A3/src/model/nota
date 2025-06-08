@@ -1,0 +1,20 @@
+package modelo;
+
+public class Nota {
+    private int idAluno;
+    private int idCurso;
+    private double nota;
+    private String dataLancamento;
+
+    public Nota(int idAluno, int idCurso, double nota, String dataLancamento) {
+        this.idAluno = idAluno;
+        this.idCurso = idCurso;
+        this.nota = nota;
+        this.dataLancamento = dataLancamento;
+    }
+
+    public int getIdAluno() { return idAluno; }
+    public int getIdCurso() { return idCurso; }
+    public double getNota() { return nota; }
+    public String getDataLancamento() { return dataLancamento; }
+}
